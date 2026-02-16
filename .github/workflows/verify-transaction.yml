@@ -1,0 +1,150 @@
+name: 验证USDT交易
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  verify-transaction:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 提取购买信息
+        id: extract
+        run: |
+          echo "ISSUE_BODY<<EOF" >> $GITHUB_OUTPUT
+          echo "${{ github.event.issue.body }}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 验证TRC20交易
+        id: verify-trc20
+        run: |
+          # 提取交易哈希
+          TX_HASH=$(echo "${{ steps.extract.outputs.ISSUE_BODY }}" | grep -oP '(?<=交易哈希: )[\w]+' | head -1)
+
+          if [ -n "$TX_HASH" ]; then
+            echo "验证TRC20交易: $TX_HASH"
+
+            # 调用TronGrid API
+            RESPONSE=$(curl -s "https://api.trongrid.io/v1/transactions/$TX_HASH")
+
+            echo "API响应: $RESPONSE"
+
+            # 检查交易是否存在
+            if echo "$RESPONSE" | grep -q "txID"; then
+              # 检查交易状态
+              RET=$(echo "$RESPONSE" | jq -r '.contractRet[0].ret // empty')
+
+              if [ "$RET" = "SUCCESS" ]; then
+                echo "✅ TRC20交易验证成功"
+                echo "VERIFIED=true" >> $GITHUB_ENV
+                echo "NETWORK=TRC20" >> $GITHUB_ENV
+              else
+                echo "❌ TRC20交易失败或未确认: $RET"
+              fi
+            else
+              echo "❌ 未找到TRC20交易"
+            fi
+          fi
+
+      - name: 验证ERC20交易
+        id: verify-erc20
+        run: |
+          # 提取交易哈希
+          TX_HASH=$(echo "${{ steps.extract.outputs.ISSUE_BODY }}" | grep -oP '(?<=交易哈希: )[\w]+' | head -1)
+
+          if [ -n "$TX_HASH" ] && [ "${{ steps.verify-trc20.outputs.VERIFIED }}" != "true" ]; then
+            echo "验证ERC20交易: $TX_HASH"
+
+            # 调用Etherscan API
+            RESPONSE=$(curl -s "https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=$TX_HASH")
+
+            echo "API响应: $RESPONSE"
+
+            # 检查交易是否存在
+            if echo "$RESPONSE" | grep -q "result"; then
+              STATUS=$(echo "$RESPONSE" | jq -r '.result.status')
+
+              if [ "$STATUS" = "0x1" ]; then
+                echo "✅ ERC20交易验证成功"
+                echo "VERIFIED=true" >> $GITHUB_ENV
+                echo "NETWORK=ERC20" >> $GITHUB_ENV
+              else
+                echo "❌ ERC20交易失败: $STATUS"
+              fi
+            else
+              echo "❌ 未找到ERC20交易"
+            fi
+          fi
+
+      - name: 回复Issue（验证成功）
+        if: env.VERIFIED == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const network = process.env.NETWORK;
+
+            const comment = `## 交易验证结果
+
+            ✅ **验证成功！**
+
+            - 网络: ${network}
+            - 交易哈希: \`${issue.body.match(/交易哈希: ([\w]+)/)?.[1] || '未知'}\`
+            - 验证时间: ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
+
+            我们会在1-2小时内将产品访问权限发送到您的GitHub账户。
+
+            感谢您的购买！`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: comment
+            });
+          env:
+            NETWORK: ${{ steps.verify-erc20.outputs.NETWORK || steps.verify-trc20.outputs.NETWORK }}
+
+      - name: 回复Issue（验证失败）
+        if: env.VERIFIED != 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+
+            const comment = `## 交易验证结果
+
+            ❌ **验证失败**
+
+            无法验证提供的交易哈希。请检查：
+            1. 交易哈希是否正确
+            2. 交易是否已确认
+            3. 支付的网络（TRC20或ERC20）
+
+            如有疑问，请重新提交Issue。`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: comment
+            });
+
+      - name: 邀请到Private Repository
+        if: env.VERIFIED == 'true'
+        run: |
+          # 提取GitHub用户名
+          GITHUB_USERNAME=$(echo "${{ steps.extract.outputs.ISSUE_BODY }}" | grep -oP '(?<=GitHub用户名: )\S+' | head -1)
+
+          if [ -n "$GITHUB_USERNAME" ]; then
+            echo "邀请用户: $GITHUB_USERNAME"
+
+            # 邀请用户到Private Repo
+            gh api -X PUT \
+              repos/goldct/ai-products-ten-guides-private/collaborators/$GITHUB_USERNAME \
+              -f permission=pull
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
