@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能体产品系列 - 购买</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        .product {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        .product h3 {
+            color: #2980b9;
+            margin-top: 0;
+        }
+        .price {
+            font-size: 24px;
+            color: #27ae60;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .features {
+            list-style-type: none;
+            padding: 0;
+        }
+        .features li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .features li:before {
+            content: "✓ ";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .buy-button {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .buy-button:hover {
+            background: #2980b9;
+        }
+        .payment-info {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .payment-info h4 {
+            color: #856404;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .wallet-address {
+            background: #fff;
+            padding: 15px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 16px;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .copy-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .copy-button:hover {
+            background: #229954;
+        }
+        .copy-button:active {
+            transform: scale(0.98);
+        }
+        .steps {
+            counter-reset: step;
+        }
+        .step {
+            padding-left: 40px;
+            position: relative;
+            margin: 15px 0;
+        }
+        .step:before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+        }
+        .alert {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+        }
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #721c24;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        .verified {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .verified-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎁 AI智能体产品系列</h1>
+
+        <div class="payment-info">
+            <h4>💰 收款信息</h4>
+            <p><strong>收款地址（USDT - TRC20）</strong></p>
+            <div class="wallet-address">
+                TYLRDHYgytrrobjH5jNUEiw1RzNuNaPUDm
+            </div>
+            <button class="copy-button" onclick="copyAddress()">
+                📋 复制地址
+            </button>
+            <p style="margin-top: 15px;"><em>⚠️ 仅支持TRC20网络，请务必确认网络类型！</em></p>
+            <div class="alert">
+                <strong>验证说明：</strong>系统会自动验证您的交易哈希，验证通过后1-2小时内发送产品访问权限。
+            </div>
+        </div>
+
+        <div class="product">
+            <h3>📚 产品1：AI智能体团队搭建完整指南</h3>
+            <p>详细介绍如何搭建和管理10人AI智能体团队，基于真实实战经验。</p>
+            <ul class="features">
+                <li>系统架构设计</li>
+                <li>10个分身角色详解</li>
+                <li>协作流程设计</li>
+                <li>Web控制面板使用</li>
+                <li>最佳实践和避坑指南</li>
+                <li>常见问题解答</li>
+            </ul>
+            <div class="price">USDT 25（约¥180）</div>
+            <a href="https://github.com/goldct/ai-products-ten-guides/issues/new?title=购买+-+AI智能体团队搭建完整指南&template=购买表单" class="buy-button">立即购买</a>
+        </div>
+
+        <div class="product">
+            <h3>📊 产品2：信息差套利实战手册</h3>
+            <p>系统化的信息差套利方法论，包含6大套利类型、5个实战案例。</p>
+            <ul class="features">
+                <li>信息差套利原理</li>
+                <li>6大套利类型详解</li>
+                <li>完整套利流程</li>
+                <li>风险控制体系</li>
+                <li>工具与资源推荐</li>
+                <li>5个实战案例</li>
+            </ul>
+            <div class="price">USDT 20（约¥145）</div>
+            <a href="https://github.com/goldct/ai-products-ten-guides/issues/new?title=购买+-+信息差套利实战手册&template=购买表单" class="buy-button">立即购买</a>
+        </div>
+
+        <div class="product">
+            <h3>🎁 捆绑优惠：两份一起购买</h3>
+            <p>同时购买两份产品，享受优惠价格！</p>
+            <div class="price">USDT 40（约¥290）</div>
+            <a href="https://github.com/goldct/ai-products-ten-guides/issues/new?title=购买+-+两份产品&template=购买表单" class="buy-button">立即购买</a>
+        </div>
+
+        <h2>📝 购买步骤</h2>
+        <div class="steps">
+            <div class="step">
+                <strong>选择产品</strong>：选择要购买的产品，点击"立即购买"
+            </div>
+            <div class="step">
+                <strong>转账</strong>：使用USDT（TRC20）转账到上方收款地址
+            </div>
+            <div class="step">
+                <strong>复制哈希</strong>：转账成功后，复制交易哈希（Tx Hash）
+            </div>
+            <div class="step">
+                <strong>填写表单</strong>：在GitHub Issue中填写交易哈希等信息
+            </div>
+            <div class="step">
+                <strong>等待验证</strong>：系统会自动验证交易（1-2分钟）
+            </div>
+            <div class="step">
+                <strong>接收产品</strong>：验证通过后，自动邀请到Private Repository
+            </div>
+        </div>
+
+        <div class="alert-danger">
+            <h4>⚠️ 重要提示</h4>
+            <ul>
+                <li><strong>务必使用TRC20网络</strong>，其他网络会导致资金丢失！</li>
+                <li>交易哈希是验证的唯一凭证，请妥善保存</li>
+                <li>验证通过后1-2小时内发送邀请</li>
+                <li>由于是数字产品，购买后不支持退款</li>
+                <li>购买后享受终身免费更新</li>
+            </ul>
+        </div>
+
+        <h2>❓ 常见问题</h2>
+        <div style="line-height: 2;">
+            <p><strong>Q: 支持哪些加密货币？</strong></p>
+            <p>A: 仅支持USDT（TRC20）</p>
+
+            <p><strong>Q: 交付需要多长时间？</strong></p>
+            <p>A: 验证通过后通常1-2小时内</p>
+
+            <p><strong>Q: 可以分开购买吗？</strong></p>
+            <p>A: 可以，单个购买见产品列表</p>
+
+            <p><strong>Q: 有试读版本吗？</strong></p>
+            <p>A: 有，试读版本在Public Repository中</p>
+
+            <p><strong>Q: 如何验证交易？</strong></p>
+            <p>A: 系统会自动验证，您只需要提交交易哈希</p>
+
+            <p><strong>Q: 验证失败怎么办？</strong></p>
+            <p>A: 检查交易哈希是否正确，确认使用TRC20网络，重新提交Issue</p>
+        </div>
+
+        <footer>
+            <p>
+                <span class="verified">
+                    <span class="verified-icon">🔐</span>
+                    收款地址验证有效
+                </span> |
+                最后更新：2025-02-16 | Powered by 坤 (Kūn)
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function copyAddress() {
+            const address = 'TYLRDHYgytrrobjH5jNUEiw1RzNuNaPUDm';
+            navigator.clipboard.writeText(address).then(() => {
+                alert('✅ 地址已复制到剪贴板！\n\n' + address);
+            }).catch(err => {
+                // 降级方案
+                const textArea = document.createElement('textarea');
+                textArea.value = address;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('✅ 地址已复制到剪贴板！\n\n' + address);
+                } catch (err) {
+                    alert('复制失败，请手动复制地址');
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+    </script>
+</body>
+</html>
